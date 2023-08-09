@@ -1,0 +1,311 @@
+#############################
+# Experiment settings       #
+#############################
+experiment         : 5 # Experiment A=0, B=1, C=2, D=3, NACwithHIE, Done
+
+#############################
+# Controller settings       #
+#############################
+
+loopRateFactor     : 3 # Virtual loop rate [ms] (time for computations = loopRateFactor - 2)
+
+useCurrentCartPose : true # Avoid jerky movement, should always be true
+useQuaternions     : false
+useNullspacePose   : false
+useDigitalFilter   : true # Note: the NAC only uses a simple lowpass filter
+
+publishRTtopics    : false
+
+mannequinMode      : false
+mannequinThresPos  : 0.05
+mannequinThresRot  : 0.05 # not used
+
+#############################
+# F/T sensors               #
+#############################
+# Note: set to false for Gazebo simulations
+forceTorqueOn      : true
+accelerometerOn    : true
+
+gripper_acc_tip: l_gripper_motor_accelerometer_link
+ft_frame_id: l_force_torque_link
+#ft_frame_id: l_gripper_tool_frame
+
+# This makes zero any force less than below (not used)
+useForceCutOff: false
+forceCutOff: [0.1,0.1,0.1,0.1,0.1,0.1]
+
+# Scaling applied before cutoff
+useForceScaling: true
+forceScaling : [0.9,0.9,0.9,0.9,0.9,0.9]
+
+#############################
+# Flexiforce settings       #
+#############################
+useFlexiForce      : false
+calibrateSensors   : false
+
+port               : /dev/ttyACM0
+baud               : 2000000
+tactile_frame_id   : l_gripper_tool_frame
+num_tactile_sensors: 4
+sensor_0 : [-1,0,0] # Opposite of sensor normal
+sensor_1 : [0,1,0]
+sensor_2 : [1,0,0]
+sensor_3 : [0,-1,0]
+max_calibration_distance: 0.2
+
+#############################
+# Robot Pose                #
+#############################
+
+## Initial (desired) Position (torso frame)
+cartIniX             :  0.65
+cartIniY             :  0.35
+cartIniZ             :  -0.10
+
+#cartIniRoll          :  0.0          # For Gazebo simulations
+cartIniRoll          :  1.57
+cartIniPitch         :  0.0
+cartIniYaw           :  0.0
+
+#############################
+# Outer loop                #
+#############################
+
+useOuterloop       : false
+# Only one can be true
+useARMAmodel       : false
+tuneARMA           : false
+useCTARMAmodel     : false # Removed
+useFIRmodel        : false # Removed
+useMRACmodel       : false # Removed
+useIRLmodel        : false # Removed
+useMSDmodel        : false # Removed
+useDirectmodel     : false # Removed
+
+outerLoop_time     : 0.0
+
+
+weightsARMA_X: [-0.7639, -0.0554, 0.0017, -0.1824, -0.0698, 0.2235, -0.2590, 0.1051]
+weightsARMA_Y: [-0.8250, -0.0920, -0.0065, -0.0776, -0.0001, 0.0091, -0.0233, 0.0141]
+
+
+#############################
+# Filtering                 #
+#############################
+
+#### Digital filter coefficients
+## Lowpass, 1st order butterworth
+# fc=100Hz, fs=1000Hz
+#a_filt: [1.0, -0.5095]
+#b_filt: [0.7548, -0.7548]
+## Lowpass, 1st order butterworth
+# fc=1000Hz, fs=3000Hz
+#a_filt: [1.0, 0.2679]
+#b_filt: [0.634, 0.634]
+# fc=35Hz, fs=1000Hz
+a_filt: [1.0, -0.8012]
+b_filt: [0.0994, 0.0994]
+
+## Band-pass, 1st order chebychev
+# 5-1000Hz, fs=3000Hz
+#a_filt: [1.0,-0.3329,-0.6610]
+#b_filt: [0.8305, 0, -0.8305]
+# 5-100Hz, fs=1000Hz
+#a_filt: [1.0,-1.0526,0.0634]
+#b_filt: [0.4683, 0, -0.4683]
+
+# Filter for F/T values
+ft_filter : 0.05
+
+# Filter for qdot values
+joint_vel_filter : 0.05
+
+#############################
+# Reference trajectory      #
+#############################
+
+executeCircleTraj  : false
+numCircleTraj      : 3
+circleRate         : 0.5   # angular velocity in rad/sec (v = r*w = A*w)
+circleLlim         : 0.0   # amplitude = (circleUlim - circleLlim)/2
+circleUlim         : 0.8   #  = A/2
+
+# Subscribes to a reference trajectory topic
+# Note: set to false if human intent is used
+externalRefTraj    : false
+
+#############################
+# NN estimator              #
+#############################
+# Estimate human intent trajectory from force and position values
+computeHumanIntentNN : true
+useHumanIntentNN     : true
+nne_kappa : 0.01
+nne_alpha : 1.0
+nne_pose_filter : 1.0
+
+nne_useLimits: true
+nne_Pmin  : [0.01,0.01,0.01,0.01]
+nne_Pmax  : [50,50,50,50]
+
+nne_useLimits_err: true
+
+#nne_Dim: 6
+#nne_G     : [1,1,1,1,1,1, 1,1,1,1,1,1, 1,1,1,1,1,1, 1]
+#nne_H     : [1,1,1,1,1,1, 1,1,1,1,1,1, 1,1,1,1,1,1, 1]
+#nne_Pmin  : [0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05]
+#nne_Pmax  : [50,50,50,50,50,50,50,50,50,50,50,50]
+
+#nne_Dim: 3
+#nne_G     : [1,1,1, 1,1,1, 1,1,1, 1]
+#nne_H     : [1,1,1, 1,1,1, 1,1,1, 1]
+#nne_Pmin  : [0.05,0.05,0.05,0.05,0.05,0.05]
+#nne_Pmax  : [50,50,50,50,50,50]
+
+nne_Dim: 2
+#nne_G     : [0.100,0.100, 0.050,0.050, 0.010,0.010, 1] # V -> xhat
+#nne_H     : [0.005,0.005,0.005, 0.005,0.005,0.005, 1] # U -> Phat
+nne_G     : [1.0,1.0, 1.0,1.0, 1.0,1.0, 1.0] # V -> xhat
+nne_H     : [0.1,0.1, 0.1,0.1, 0.1,0.1, 0.1] # U -> Phat
+
+#############################
+# NN controller             #
+#############################
+nnNum_Hidden          : 18
+nnNum_Joints          : 7  # DOF
+
+#Note: nnNum_Inputs determined by NAC
+
+# Filtered error
+#  r   = (qd_m - qd) + lambda*(q_m - q);
+# Kv*r = Kv*(qd_m - qd) + Kv*lambda*(q_m - q);
+# Works best when Kv > lambda?
+
+nnNum_Outputs         : 6  # Cartesian / Quaternion
+nn_Kv                 : [5,5,5,3,3,3]
+nn_lambda             : [2,2,2,2,2,2]
+
+#nnNum_Outputs         : 3
+#nn_Kv                 : [5,5,5]
+#nn_lambda             : [25,25,25]
+
+#nnNum_Outputs         : 1
+#nn_Kv                 : [1]
+#nn_lambda             : [10]
+
+nn_usePED : false
+nn_Kd                 : [20,20,20,20,20,20]
+nn_Dd                 : [10,10,10,10,10,10]
+
+nn_kappa              : 0.1
+nn_Kz                 : 0.01
+nn_Zb                 : 100
+nn_feedForwardForce   : 0.0    # small because of jitter from FT measurments
+nn_nnF                : 10   # -> W (outer) smaller than G?
+nn_nnG                : 10    # -> V (inner)
+nn_ON                 : 1
+
+#############################
+# Outer loop (deprecated)   #
+#############################
+
+# Human intent estimation
+useHumanIntent     : false
+intentEst_time     : 0.05
+intentEst_delT     : 0.1  # Propagation time
+intentEst_M        : 100.0  # M_i the mass of the intent admittance model
+
+# Specifically for MRAC
+useSimHuman        : false
+# Params for MRAC Sim Human
+simHuman_a            : 0.1
+simHuman_b            : 2.6
+
+# Params for the MSD outer-loop controller
+m_M                   : 1.0
+m_S                   : 0.0
+m_D                   : 5.0
+
+# Params for M(s) of the RLS models
+task_mA               : 0.7
+task_mB               : 0.7
+
+# The params of the RLS estimator
+rls_lambda         : 0.98
+rls_sigma          : 0.001
+
+fixedFilterWeights : false
+
+#############################
+# Controller plugins        #
+#############################
+
+#pr2_cartneuroController:
+#  type: ice_robot_controllers/PR2CartneuroControllerClass
+#  root_name: torso_lift_link
+#  tip_name: l_gripper_tool_frame
+
+pr2_adaptNeuroController:
+  type: ice_robot_controllers/PR2adaptNeuroControllerClass
+  root_name: torso_lift_link
+  tip_name: l_gripper_tool_frame
+  #tip_name: l_wrist_roll_link
+
+#############################
+# Torque saturation         #
+#############################
+saturation:
+  l_shoulder_pan_joint: 11.88
+  l_shoulder_lift_joint: 11.64
+  l_upper_arm_roll_joint: 6.143
+  l_elbow_flex_joint: 6.804
+  l_forearm_roll_joint: 8.376
+  l_wrist_flex_joint: 5.568
+  l_wrist_roll_joint: 5.568
+  r_shoulder_pan_joint: 11.88
+  r_shoulder_lift_joint: 11.64
+  r_upper_arm_roll_joint: 6.143
+  r_elbow_flex_joint: 6.804
+  r_forearm_roll_joint: 8.376
+  r_wrist_flex_joint: 5.568
+  r_wrist_roll_joint: 5.568
+
+#############################
+# Posture control           #
+#############################
+k_posture: 3 #25.0
+jacobian_inverse_damping: 0.01
+joint_feedforward:
+  l_shoulder_pan_joint: 3.33
+  l_shoulder_lift_joint: 1.16
+  l_upper_arm_roll_joint: 0.1
+  l_elbow_flex_joint: 0.25
+  l_forearm_roll_joint: 0.133
+  l_wrist_flex_joint: 0.0727
+  l_wrist_roll_joint: 0.0727
+  r_shoulder_pan_joint: 3.33
+  r_shoulder_lift_joint: 1.16
+  r_upper_arm_roll_joint: 0.1
+  r_elbow_flex_joint: 0.25
+  r_forearm_roll_joint: 0.133
+  r_wrist_flex_joint: 0.0727
+  r_wrist_roll_joint: 0.0727
+#[0.467279,0.38766,0.850325,-1.88652,3.09594,-1.28368,-3.89919];
+posture:
+# 'elbowupl': [0.79,0,1.6 , 9999, 9999, 9999, 9999]
+  l_shoulder_pan_joint: 0.79
+  l_shoulder_lift_joint: 0
+  l_upper_arm_roll_joint: 1.6
+  l_elbow_flex_joint: 9999
+  l_forearm_roll_joint: 9999
+  l_wrist_flex_joint: 9999
+  l_wrist_roll_joint: 9999
+  r_shoulder_pan_joint: -0.5
+  r_shoulder_lift_joint: 0.0
+  r_upper_arm_roll_joint: -1.5
+  r_elbow_flex_joint: -1.7
+  r_forearm_roll_joint: 1.50
+  r_wrist_flex_joint: 0.0
+  r_wrist_roll_joint: 0.0

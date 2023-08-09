@@ -1,0 +1,17 @@
+#request constants
+
+---
+#response constants
+bool useFixedWeights
+# Filter Weights
+float64 w0
+float64 w1
+float64 w2
+float64 w3
+float64 w4
+float64 w5
+float64 w6
+float64 w7
+
+# type of outer-loop
+string[] outerModel

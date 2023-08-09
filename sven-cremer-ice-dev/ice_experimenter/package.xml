@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <name>ice_experimenter</name>
+  <version>0.0.0</version>
+  <description>The ice_experimenter package</description>
+  <maintainer email="sven.cremer@mavs.uta.edu">Sven Cremer</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <build_depend>cmake_modules</build_depend>
+  <build_depend>ice_msgs</build_depend>
+  <build_depend>rosbag</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>apc_robot</build_depend>
+  <build_depend>sound_play</build_depend>
+  <build_depend>trajectory_generator</build_depend>
+  <build_depend>data_recorder</build_depend>
+
+  <run_depend>cmake_modules</run_depend>
+  <run_depend>ice_msgs</run_depend>
+  <run_depend>rosbag</run_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>apc_robot</run_depend>
+  <run_depend>sound_play</run_depend>
+  <run_depend>trajectory_generator</run_depend>
+  
+</package>
